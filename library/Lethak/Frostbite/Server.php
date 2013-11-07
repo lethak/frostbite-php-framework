@@ -33,11 +33,12 @@ class Lethak_Frostbite_Server extends Lethak_Frostbite_Rcon_Connection
 				//DNT
 			break;
 
-			case 'PasswordNotSet':
 			case 'InvalidArguments':
+			case 'PasswordNotSet':
+			case 'InvalidPasswordHash':
 			default:
-				throw new Lethak_Frostbite_Rcon_Exception($response[0]);
 				$this->connectionClose();
+				throw new Lethak_Frostbite_Rcon_Exception(trim("".$response[0]));
 			break;
 		}
 		
