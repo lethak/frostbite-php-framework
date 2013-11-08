@@ -14,9 +14,9 @@ Features
 * Object Oriented from the user perspective
 
 ```php
-$Server = new Lethak_Frostbite_Server("192.168.0.1", 47200);
-$Server->connect();
-$some_stuff = $Server->getVar('maxPlayers');
+$server = new Lethak_Frostbite_Server("192.168.0.1", 47200);
+$server->connect();
+$some_stuff = $server->getVar('maxPlayers');
 ```
 
 
@@ -44,19 +44,19 @@ What will be working soon ?
 
 
 What is planned ahead ?
-----------------------
+-----------------------
 - Preset definition in order to allow quick preset switching and even your own preset.
 - All the other stuff available within the Remote Control Protocol of frostbite 2, no timetable.
 
 
 Exemple: RCON Login
------------
+-------------------
 
 Authenticate as the server administrator using the RCON password to be granted access to restricted commands
 
 ```php
-$Server = new Lethak_Frostbite_Server("192.168.0.1", 47200);
-$Server->login("myRconPassword");
+$server = new Lethak_Frostbite_Server("192.168.0.1", 47200);
+$server->login("myRconPassword");
 
 // Fetch the player list,
 // it will internaly use admin.playerList if authed, playerList if not authed...
@@ -69,7 +69,7 @@ echo '<pre>'.print_r($playerList,1).'</pre>';
 
 
 Exemple: Multiple server instance
-------------------------
+---------------------------------
 
 Because one does not simply have a single server to manage.
 
@@ -86,4 +86,20 @@ foreach($serverList as $server)
   $some_stuff = $server->getVar('maxPlayers');
   $server->say('Team killing for vehicles is prohibited');
 }
+```
+
+Exemple: Error handling
+---------------------------------
+
+```php
+try
+{
+  $server = new Lethak_Frostbite_Server("192.168.0.1", 47200);
+  $some_stuff = $server->rconCommand('this.is-not-a-valid-command');
+}
+catch(Exception $error)
+{
+  echo('<pre>'.print_r($error,1).'</pre>');
+}
+
 ```
