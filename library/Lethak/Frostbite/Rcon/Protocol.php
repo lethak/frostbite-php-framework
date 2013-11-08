@@ -164,7 +164,7 @@ class Lethak_Frostbite_Rcon_Protocol
 	 *
 	 * @return array of words; server's response
 	 **/
-	protected function rconCommand($string)
+	public function rconCommand($string)
 	{
 		
 		if (socket_write($this->socket, $this->EncodeClientRequest($string)) === false)
@@ -222,7 +222,9 @@ class Lethak_Frostbite_Rcon_Protocol
 
 	public function connectionClose()
 	{
-		socket_close($this->socket);
+		//$this->rconCommand('quit');
+		@socket_close($this->socket);
+		$this->socket = false;
 		return $this;
 	}
 
@@ -234,4 +236,3 @@ class Lethak_Frostbite_Rcon_Protocol
 
 class Lethak_Frostbite_Rcon_Protocol_Exception extends Exception {}
 
-?>

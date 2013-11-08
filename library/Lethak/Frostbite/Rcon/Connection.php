@@ -50,7 +50,7 @@ class Lethak_Frostbite_Rcon_Connection extends Lethak_Frostbite_Rcon_Protocol
 		return $this;
 	}
 
-	protected function connectionEnforcement()
+	public function connectionEnforcement()
 	{
 		if ($this->socket===false)
 			$this->connect();
