@@ -4,14 +4,14 @@ require_once(__DIR__.'/library/Lethak/Frostbite/Server.php');
 
 try
 {
-	$Server = new Lethak_Frostbite_Server("109.239.158.44", 47200);
-	$Server->login("myRconPassword");
+	$server = new Lethak_Frostbite_Server("109.239.158.44", 47200);
+	$server->login("myRconPassword");
+	$RESULT = $server->say('Hello World !')->players->getList();
 }
 catch(Exception $error)
 {
-	die('Exception: <pre>'.print_r($error->getMessage(), true).'</pre>');
+	die('Exception: ['.get_class($error).'] <pre>'.print_r($error->getMessage(), true).'</pre>');
 }
 
-die('<pre>'.print_r('finished', true).'</pre>');
-
+echo('FINISHED: <pre>'.print_r($RESULT, true).'</pre>');exit;
 

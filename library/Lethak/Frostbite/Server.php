@@ -1,8 +1,13 @@
 <?php
 
+require_once(__DIR__.'/Rcon/Exception.php');
+require_once(__DIR__.'/Rcon/Connection.php');
+
+require_once(__DIR__.'/Player.php');
+
 require_once(__DIR__.'/Server/Players.php');
 require_once(__DIR__.'/Server/Maps.php');
-require_once(__DIR__.'/Rcon/Connection.php');
+
 
 class Lethak_Frostbite_Server extends Lethak_Frostbite_Rcon_Connection
 {
@@ -10,20 +15,23 @@ class Lethak_Frostbite_Server extends Lethak_Frostbite_Rcon_Connection
 	public $players;
 	public $maps;
 
-	function __construct($serverIp, $rconPort, $label=null)
+	function __construct($serverIp, $rconPort, $rconPassword=null, $label=null)
 	{
-		parent::__construct($serverIp, $rconPort);
+		parent::__construct($serverIp, $rconPort, $rconPassword);
 
 		$this->label = $label;
 		if($this->label===null||$this->label=="")
 			$this->label = "".$this->serverIp.":".$this->rconPort;
-		
+
 		$this->players = new Lethak_Frostbite_Server_Players($this);
 		$this->maps = new Lethak_Frostbite_Server_Maps($this);
 	}
 
-	public function login($password)
+	public function login($password=null)
 	{
+		if($password===null||$password=='')
+			$password = $this->rconPassword;
+
 		$this->connectionEnforcement();
 
 		$response = $this->rconCommand('login.hashed');
@@ -33,19 +41,6 @@ class Lethak_Frostbite_Server extends Lethak_Frostbite_Rcon_Connection
 		}
 		
 		$response = $this->rconCommand('login.hashed '.self::generatePasswordHash($response[1], $password));
-		switch ($response[0])
-		{
-			case 'OK':
-				//DNT
-			break;
-
-			case 'InvalidArguments':
-			case 'PasswordNotSet':
-			case 'InvalidPasswordHash':
-			default:
-				throw new Lethak_Frostbite_Rcon_Exception(trim("".$response[0]));
-			break;
-		}
 		
 		return $this;
 	}
@@ -67,11 +62,33 @@ class Lethak_Frostbite_Server extends Lethak_Frostbite_Rcon_Connection
 	}
 
 
+	public function say($message='', $playerSubset='all')
+	{
+		$message = trim((string)$message);
+		$message = str_replace(array('"',"'"), '`', $message);
+		if($message!=='')
+		{
+			$cmd = 'admin.say "'.$message.'" '.$playerSubset.'';
+			$response = $this->rconCommand($cmd);
+		}
+		return $this;
+	}
 
+	public function yell($message='', $duration=5, $playerSubset='all')
+	{
+		$message = trim((string)$message);
+		$message = str_replace(array('"',"'"), '`', $message);
+		if($message!=='')
+		{
+			$cmd = 'admin.yell "'.$message.'" "'.$duration.'"" '.$playerSubset.'';
+			$response = $this->rconCommand($cmd);
+		}
+		return $this;
+	}
 
 
 }
 
 
 class Lethak_Frostbite_Server_Exception extends Exception {}
-class Lethak_Frostbite_Server_Vars_Exception extends Exception {}
+

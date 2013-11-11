@@ -34,13 +34,18 @@ What is working ?
 - Server connection via sockets
 - Issuing rcon commands (request/response)
 - Server login auth process (hashed)
+- players.getList() when authed
+- player.getList() when not authed
+- server and player .say()
+- server and player .yell() even if broken server-side (R7 tested)
+
 
 What will be working soon ?
 ---------------------------
-- player list when authed
-- player list when not authed
-- server.say
-- server.yell
+player.kill
+player.kick
+player.ban
+player.move
 
 
 What is planned ahead ?
@@ -60,7 +65,7 @@ $server->login("myRconPassword");
 
 // Fetch the player list,
 // it will internaly use admin.playerList if authed, playerList if not authed...
-$playerList = $server->players->list();
+$playerList = $server->players->getList();
 
 // HTML formated rendering of the array list...
 echo '<pre>'.print_r($playerList,1).'</pre>'; 

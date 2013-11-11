@@ -1,5 +1,6 @@
 <?php
 
+require_once(__DIR__.'/../Server.php');
 
 class Lethak_Frostbite_Server_Players
 {
@@ -11,49 +12,65 @@ class Lethak_Frostbite_Server_Players
 	}
 
 
-/*
-@returns
-Array
-(
-    [status] => OK
-    [players] => Array
-        (
-            [0] => Array
-                (
-                    [name] => lethak
-                    [guid] => EA_5FF93997EB97B108B643F1513E0F4FXX
-                    [teamId] => 1
-                    [squadId] => 1
-                    [kills] => 0
-                    [deaths] => 0
-                    [score] => 0
-                    [rank] => 30
-                    [ping] => 21
-                )
+	/**
+		@returns
+		Array
+		(
+		    [status] => OK
+		    [players] => Array
+		        (
+		            [0] => Array
+		                (
+		                    [name] => lethak
+		                    [guid] => EA_5FF93997EB97B108B643F1513E0F4FXX
+		                    [teamId] => 1
+		                    [squadId] => 1
+		                    [kills] => 0
+		                    [deaths] => 0
+		                    [score] => 0
+		                    [rank] => 30
+		                    [ping] => 21
+		                )
 
-            [1] => Array
-                (
-                    [name] => FR-Akasid
-                    [guid] => EA_47292D6CA18E6051304C52A949EA18XX
-                    [teamId] => 2
-                    [squadId] => 1
-                    [kills] => 0
-                    [deaths] => 0
-                    [score] => 0
-                    [rank] => 24
-                    [ping] => 51
-                )
+		            [1] => Array
+		                (
+		                    [name] => FR-Akasid
+		                    [guid] => EA_47292D6CA18E6051304C52A949EA18XX
+		                    [teamId] => 2
+		                    [squadId] => 1
+		                    [kills] => 0
+		                    [deaths] => 0
+		                    [score] => 0
+		                    [rank] => 24
+		                    [ping] => 51
+		                )
 
-        )
+		        )
 
-    [playerCount] => 2
-)
-*/
-
-	public function getAdminPlayerList()
+		    [playerCount] => 2
+		)
+	*/
+	public function getList($asObject=true)
 	{
 		$this->server->connectionEnforcement();
-		$response = $this->server->rconCommand('admin.listPlayers all');
+
+		try
+		{
+			$response = $this->server->rconCommand('admin.listPlayers all');
+		}
+		catch(Lethak_Frostbite_Rcon_LogInRequired_Exception $error)
+		{
+			if(''.$this->server->rconPassword!='')
+			{
+				$this->login($this->server->rconPassword);
+				return $this->getList($asObject);
+			}
+			else
+			{
+				$response = $this->server->rconCommand('listPlayers all');
+			}
+		}
+
 		/*
 		Array
 		(
@@ -92,80 +109,56 @@ Array
 		    [28] => 22
 		    [29] => 46
 
-		    [30] => FR-Akasid
-		    [31] => EA_47292D6CA18E6051304C52A949EA18XX
-		    [32] => 2
-		    [33] => 1
-		    [34] => 1
-		    [35] => 3
-		    [36] => 357
-		    [37] => 23
-		    [38] => 45
-
-		    [39] => Nourcy
-		    [40] => EA_54EEAF329E5DE24ECA86CEC29443D2XX
-		    [41] => 1
-		    [42] => 1
-		    [43] => 5
-		    [44] => 1
-		    [45] => 1772
-		    [46] => 15
-		    [47] => 39
-
 		    [?] => 0
 		)
 		*/
-		if(substr($response[0],0,2)=='OK')
+
+		$table['status'] = ''.$response[0];
+		$numberOfPlayerField = intval($response[1]);
+
+		unset($response[0], $response[1]);
+
+
+		$table['players'] = array();
+		$titles = array();
+		$valueBuffer = array();
+		$iPlayerField = 0;
+		$iPlayerSet = 0;
+
+		$iCursor = 2;
+
+		// Fetching column title
+		for ($i=0; $i < $numberOfPlayerField; $i++)
+		{ 
+			$titles[$i] = $response[$iCursor];
+			$iCursor++;
+		}
+
+		$table['playerCount'] = intval($response[$iCursor]);
+		unset($response[$iCursor]);
+		$iCursor++;
+		
+		// Fetching player set
+		$playerSet = 0;
+		while ($playerSet<$table['playerCount'])
 		{
-			$table['status'] = ''.$response[0];
-			$numberOfPlayerField = intval($response[1]);
-
-			unset($response[0], $response[1]);
-
-
-			$table['players'] = array();
-			$titles = array();
-			$valueBuffer = array();
-			$iPlayerField = 0;
-			$iPlayerSet = 0;
-
-			$iCursor = 2;
-
-			// Fetching column title
+			$tempPlayer = array();
 			for ($i=0; $i < $numberOfPlayerField; $i++)
 			{ 
-				$titles[$i] = $response[$iCursor];
+				$tempPlayer[$titles[$i]] = $response[$iCursor];
+				unset($response[$iCursor]);
+				if(count($tempPlayer)>=$numberOfPlayerField)
+				{
+					if($asObject)
+						$tempPlayer = new Lethak_Frostbite_Player($tempPlayer, $this->server);
+					$table['players'][] = $tempPlayer;
+				}
 				$iCursor++;
 			}
-
-			$table['playerCount'] = intval($response[$iCursor]);
-			unset($response[$iCursor]);
-			$iCursor++;
-			
-			// Fetching player set
-			$playerSet = 0;
-			while ($playerSet<$table['playerCount'])
-			{
-				$tempPlayer = array();
-				for ($i=0; $i < $numberOfPlayerField; $i++)
-				{ 
-					$tempPlayer[$titles[$i]] = $response[$iCursor];
-					unset($response[$iCursor]);
-					if(count($tempPlayer)>=$numberOfPlayerField)
-					{
-						$table['players'][] = $tempPlayer;
-					}
-					$iCursor++;
-				}
-				$playerSet++;
-			}
-
-			return $table;
+			$playerSet++;
 		}
-		else
-		{
-			throw new Lethak_Frostbite_Server_Exception("Error Processing admin.playerList (".$response[0].")");
-		}
+
+		return $table;
 
 
 	}
