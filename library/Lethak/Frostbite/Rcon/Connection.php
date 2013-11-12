@@ -358,19 +358,27 @@ class Lethak_Frostbite_Rcon_Connection
 		return array($packet, $this->receiveBuffer);
 	}
 
-	private function EncodeClientRequest($string)
+	private function EncodeClientRequest($rconCommand)
 	{
-		$splited = false;
-		// string splitting
-		if ((strpos($string, '"') !== false) or (strpos($string, '\'') !== false)) {
-			$words = preg_split('/["\']/', $string);
+		if(is_array($rconCommand))
+		{
+			$words = $rconCommand;
+		}
+		else
+		{
+			$string = $rconCommand;
+			$splited = false;
+			// string splitting
+			if ((strpos($string, '"') !== false) or (strpos($string, '\'') !== false)) {
+				$words = preg_split('/["\']/', $string);
 
-			for ($i=0; $i < count($words); $i++) { 
-				$words[$i] = trim($words[$i]);
+				for ($i=0; $i < count($words); $i++) { 
+					$words[$i] = trim($words[$i]);
+				}
+				$splited = true;
+			} else {
+				$words = preg_split('/\s+/', $string);
 			}
-			$splited = true;
-		} else {
-			$words = preg_split('/\s+/', $string);
 		}
 
 		foreach ($words as $key => $value)
