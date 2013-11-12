@@ -82,9 +82,9 @@ class Lethak_Frostbite_Player
 
 	# admin.kickPlayer <player name> <reason>
 	# Kick player <soldier name> from server
-	public function kick()
+	public function kick($reason='')
 	{
-		throw new Exception('NotImplementedYet');
+		$this->server->kick($this->name, $reason);
 	}
 
 	public function ban()
@@ -94,12 +94,12 @@ class Lethak_Frostbite_Player
 
 	public function say($message='')
 	{
-		$this->server->say($message, '"player" '.$this->data['name'].'"');
+		$this->server->say($message, 'player '.$this->name);
 	}
 
 	public function yell($message='', $duration=5)
 	{
-		$this->server->yell($message, $duration, '"player" '.$this->data['name'].'"');
+		$this->server->yell($message, $duration, 'player '.$this->name);
 	}
 
 	public function idleDuration()

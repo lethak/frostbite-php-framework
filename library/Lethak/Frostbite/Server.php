@@ -68,7 +68,7 @@ class Lethak_Frostbite_Server extends Lethak_Frostbite_Rcon_Connection
 		$message = str_replace(array('"',"'"), '`', $message);
 		if($message!=='')
 		{
-			$cmd = 'admin.say "'.$message.'" '.$playerSubset.'';
+			$cmd = array_merge(array('admin.say', $message), explode(' ', $playerSubset));
 			$response = $this->rconCommand($cmd);
 		}
 		return $this;
@@ -80,7 +80,20 @@ class Lethak_Frostbite_Server extends Lethak_Frostbite_Rcon_Connection
 		$message = str_replace(array('"',"'"), '`', $message);
 		if($message!=='')
 		{
-			$cmd = 'admin.yell "'.$message.'" "'.$duration.'"" '.$playerSubset.'';
+			$cmd = array_merge(array('admin.yell', $message, $duration), explode(' ', $playerSubset));
+			$response = $this->rconCommand($cmd);
+		}
+		return $this;
+	}
+
+	# admin.kickPlayer <player name> <reason>
+	# Kick player <soldier name> from server
+	public function kick($playerName='', $reason='')
+	{
+		$playerName = str_replace(' ', '', $playerName);
+		if ($playerName!='')
+		{
+			$cmd = array('admin.kickPlayer', $playerName, $reason);
 			$response = $this->rconCommand($cmd);
 		}
 		return $this;
