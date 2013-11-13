@@ -113,7 +113,7 @@ catch(Exception $error)
 
 
 
-Exemple: Creating you own preset class
+Exemple: Creating your own preset class
 ----------------------------------------
 
 For the moment, you have to create your own class like this one.
