@@ -67,6 +67,8 @@ abstract class Lethak_Frostbite_Server_Preset_Abstract
 	protected function defaultDefinition()
 	{
 		return array(
+			'vars.preset' => "Normal",
+			
 			//'vars.serverName' => "LethaK's Frostbite PHP Framework Server",
 			//'vars.serverMessage' => '',
 			//'vars.serverDescription' => '',

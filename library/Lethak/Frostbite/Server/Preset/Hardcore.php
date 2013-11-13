@@ -12,6 +12,8 @@ class Lethak_Frostbite_Server_Preset_Hardcore extends Lethak_Frostbite_Server_Pr
 	protected function presetDefinition()
 	{
 		return array(
+			'vars.preset' => "Hardcore",
+
 			//'vars.serverName' => "LethaK's Frostbite PHP Framework Server",
 			//'vars.serverMessage' => '',
 			//'vars.serverDescription' => '',

@@ -12,6 +12,8 @@ class Lethak_Frostbite_Server_Preset_Deimos extends Lethak_Frostbite_Server_Pres
 	protected function presetDefinition()
 	{
 		return array(
+			'vars.preset' => "Hardcore",
+
 			//'vars.serverName' => "LethaK's Frostbite PHP Framework Server",
 			'vars.serverMessage' => 'This server is running a custom Deimos preset',
 			//'vars.serverDescription' => '',
@@ -24,7 +26,7 @@ class Lethak_Frostbite_Server_Preset_Deimos extends Lethak_Frostbite_Server_Pres
 			//'vars.bulletDamage' => 100, // ReadOnly
 			//'vars.crossHair' => 1, // UnknownCommand
 			
-			'vars.friendlyFire' => 0,
+			'vars.friendlyFire' => 1,
 			'vars.teamKillCountForKick' => 5, // Disallowed on Ranked
 			'vars.teamKillKickForBan' => 3,
 			'vars.teamKillValueForKick' => 60*10,
@@ -40,11 +42,11 @@ class Lethak_Frostbite_Server_Preset_Deimos extends Lethak_Frostbite_Server_Pres
 			'vars.hud' => 1,
 			'vars.3dSpotting' => 0,
 			'vars.killCam' => 0,
-			'vars.3pCam' => 1,
+			'vars.3pCam' => 0,
 			'vars.nameTag' => 1,
 			'vars.hitIndicatorsEnabled' => 1,
 			'vars.playerRespawnTime' => 100,
-			'vars.soldierHealth' => 70,
+			'vars.soldierHealth' => 69,
 			'vars.forceReloadWholeMags' => 0,
 			'vars.roundStartPlayerCount' => 4,
 			'vars.commander' => 1, 

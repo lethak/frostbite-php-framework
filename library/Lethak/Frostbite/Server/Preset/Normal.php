@@ -12,6 +12,8 @@ class Lethak_Frostbite_Server_Preset_Normal extends Lethak_Frostbite_Server_Pres
 	protected function presetDefinition()
 	{
 		return array(
+			'vars.preset' => "Normal",
+
 			//'vars.serverName' => "LethaK's Frostbite PHP Framework Server",
 			//'vars.serverMessage' => '',
 			//'vars.serverDescription' => '',
