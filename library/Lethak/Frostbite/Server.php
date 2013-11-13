@@ -1,12 +1,12 @@
 <?php
 
-require_once(__DIR__.'/Rcon/Exception.php');
-require_once(__DIR__.'/Rcon/Connection.php');
+require_once(dirname(__FILE__).'/Rcon/Exception.php');
+require_once(dirname(__FILE__).'/Rcon/Connection.php');
 
-require_once(__DIR__.'/Player.php');
+require_once(dirname(__FILE__).'/Player.php');
 
-require_once(__DIR__.'/Server/Players.php');
-require_once(__DIR__.'/Server/Maps.php');
+require_once(dirname(__FILE__).'/Server/Players.php');
+require_once(dirname(__FILE__).'/Server/Maps.php');
 
 
 class Lethak_Frostbite_Server extends Lethak_Frostbite_Rcon_Connection
@@ -14,6 +14,7 @@ class Lethak_Frostbite_Server extends Lethak_Frostbite_Rcon_Connection
 	public $label;
 	public $players;
 	public $maps;
+	
 
 	function __construct($serverIp, $rconPort, $rconPassword=null, $label=null)
 	{
@@ -32,6 +33,9 @@ class Lethak_Frostbite_Server extends Lethak_Frostbite_Rcon_Connection
 		if($password===null||$password=='')
 			$password = $this->rconPassword;
 
+		if($password===null||$password==''||$this->isAuthed)
+			return $this;
+
 		$this->connectionEnforcement();
 
 		$response = $this->rconCommand('login.hashed');
@@ -39,8 +43,12 @@ class Lethak_Frostbite_Server extends Lethak_Frostbite_Rcon_Connection
 		{
 			throw new Lethak_Frostbite_Rcon_Connection_Exception("Could not login with server ".$this->serverIp."");
 		}
-		
 		$response = $this->rconCommand('login.hashed '.self::generatePasswordHash($response[1], $password));
+		
+		if($response[0]!='OK')
+			$this->isAuthed = false;
+		else
+			$this->isAuthed = true;
 		
 		return $this;
 	}
@@ -59,6 +67,14 @@ class Lethak_Frostbite_Server extends Lethak_Frostbite_Rcon_Connection
 			throw new Lethak_Frostbite_Server_Vars_Exception("[vars.".$varName."] ".$response[0]."");
 
 		return array('vars.'.$varName=>intval($response[1]));
+	}
+
+	public function apply($whatToApply)
+	{
+		if($whatToApply instanceof Lethak_Frostbite_Server_Preset_Abstract)
+			return $whatToApply->applyTo($this);
+
+		return $this;
 	}
 
 

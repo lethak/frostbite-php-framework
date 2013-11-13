@@ -1,6 +1,6 @@
 <?php
 
-require_once(__DIR__.'/../Server.php');
+require_once(dirname(__FILE__).'/../Server.php');
 
 class Lethak_Frostbite_Server_Players
 {

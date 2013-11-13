@@ -16,6 +16,7 @@ class Lethak_Frostbite_Rcon_Connection
 
 	protected $socket;
 	protected $clientSequenceNr;
+	protected $isAuthed;
 
 	private $receiveBuffer;
 
@@ -31,6 +32,7 @@ class Lethak_Frostbite_Rcon_Connection
 		$this->receiveBuffer = '';
 		$this->streamTimeout = 5;
 		$this->rconPassword = ''.$rconPassword;
+		$this->isAuthed = false;
 	}
 
 	function __destruct()
@@ -263,71 +265,75 @@ class Lethak_Frostbite_Rcon_Connection
 				case 'LogInRequired':
 					if(''.$this->rconPassword!='')
 					{
-						$this->login();
+						$L = $this->login();
 						return true;
 					}
 					else
-						throw new Lethak_Frostbite_Rcon_LogInRequired_Exception($cmd);
+						throw new Lethak_Frostbite_Rcon_LogInRequired_Exception(implode(' ', $cmd));
 				break;
 
 				case 'InvalidArgument':
 				case 'InvalidArguments':
-					throw new Lethak_Frostbite_Rcon_InvalidArguments_Exception($cmd);
+					throw new Lethak_Frostbite_Rcon_InvalidArguments_Exception(implode(' ', $cmd));
 				break;
 
 				case 'InvalidNumberOfArguments':
-					throw new Lethak_Frostbite_Rcon_InvalidNumberOfArguments_Exception($cmd);
+					throw new Lethak_Frostbite_Rcon_InvalidNumberOfArguments_Exception(implode(' ', $cmd));
 				break;
 
 				case 'PasswordNotSet':
-					throw new Lethak_Frostbite_Rcon_PasswordNotSet_Exception($cmd);
+					throw new Lethak_Frostbite_Rcon_PasswordNotSet_Exception(implode(' ', $cmd));
 				break;
 
 				case 'InvalidPassword':
 				case 'InvalidPasswordHash':
-					throw new Lethak_Frostbite_Rcon_InvalidPassword_Exception($cmd);
+					throw new Lethak_Frostbite_Rcon_InvalidPassword_Exception(implode(' ', $cmd));
 				break;
 
 				case 'PlayerNotFound':
-					throw new Lethak_Frostbite_Rcon_PlayerNotFound_Exception($cmd);
+					throw new Lethak_Frostbite_Rcon_PlayerNotFound_Exception(implode(' ', $cmd));
 				break;
 
 				case 'MessageIsTooLong':
 				case 'TooLongMessage':
-					throw new Lethak_Frostbite_Rcon_MessageIsTooLong_Exception($cmd);
+					throw new Lethak_Frostbite_Rcon_MessageIsTooLong_Exception(implode(' ', $cmd));
 				break;
 
 				case 'InvalidPlayer':
 				case 'InvalidPlayerId':
-					throw new Lethak_Frostbite_Rcon_InvalidPlayer_Exception($cmd);
+					throw new Lethak_Frostbite_Rcon_InvalidPlayer_Exception(implode(' ', $cmd));
 				break;
 
 				case 'SoldierNotDead':
 				case 'PlayerNotDead':
-					throw new Lethak_Frostbite_Rcon_PlayerNotDead_Exception($cmd);
+					throw new Lethak_Frostbite_Rcon_PlayerNotDead_Exception(implode(' ', $cmd));
 				break;
 
 				case 'SoldierNotAlive':
 				case 'PlayerNotAlive':
-					throw new Lethak_Frostbite_Rcon_SoldierNotAlive_Exception($cmd);
+					throw new Lethak_Frostbite_Rcon_SoldierNotAlive_Exception(implode(' ', $cmd));
 				break;
 
 				case 'InvalidForceKill':
-					throw new Lethak_Frostbite_Rcon_InvalidForceKill_Exception($cmd);
+					throw new Lethak_Frostbite_Rcon_InvalidForceKill_Exception(implode(' ', $cmd));
 				break;
 				
 				case 'InvalidSquad':
 				case 'InvalidSquadId':
-					throw new Lethak_Frostbite_Rcon_InvalidSquad_Exception($cmd);
+					throw new Lethak_Frostbite_Rcon_InvalidSquad_Exception(implode(' ', $cmd));
 				break;
 
 				case 'InvalidTeam':
 				case 'InvalidTeamId':
-					throw new Lethak_Frostbite_Rcon_InvalidTeam_Exception($cmd);
+					throw new Lethak_Frostbite_Rcon_InvalidTeam_Exception(implode(' ', $cmd));
 				break;
 
 				case 'CommandIsReadOnly':
-					throw new Lethak_Frostbite_Rcon_CommandIsReadOnly_Exception($cmd);
+					throw new Lethak_Frostbite_Rcon_CommandIsReadOnly_Exception(implode(' ', $cmd));
+				break;
+				
+				case 'UnknownCommand':
+					throw new Lethak_Frostbite_Rcon_UnknownCommand_Exception(implode(' ', $cmd));
 				break;
 				
 				default:
@@ -339,6 +345,26 @@ class Lethak_Frostbite_Rcon_Connection
 		return false;
 	}
 
+	// Untested yet
+	public function rconCommandBatch($arrayOfRconCommand=array())
+	{
+		if(!is_array($arrayOfRconCommand))
+			$arrayOfRconCommand = array();
+
+		$result = array();
+		foreach ($arrayOfRconCommand as $key => $cmd)
+		{
+			try
+			{
+				$result[$key] = $server->rconCommand($cmd);
+			}
+			catch(Exception $error)
+			{
+				$result[$key] = $error;
+			}
+		}
+		return $result;
+	}
 
 	private function receivePacket()
 	{

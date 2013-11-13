@@ -17,3 +17,4 @@ class Lethak_Frostbite_Rcon_PlayerNotDead_Exception 			extends Lethak_Frostbite_
 class Lethak_Frostbite_Rcon_InvalidForceKill_Exception 			extends Lethak_Frostbite_Rcon_Exception {}
 class Lethak_Frostbite_Rcon_SoldierNotAlive_Exception 			extends Lethak_Frostbite_Rcon_Exception {}
 class Lethak_Frostbite_Rcon_CommandIsReadOnly_Exception 		extends Lethak_Frostbite_Rcon_Exception {}
+class Lethak_Frostbite_Rcon_UnknownCommand_Exception 			extends Lethak_Frostbite_Rcon_Exception {}

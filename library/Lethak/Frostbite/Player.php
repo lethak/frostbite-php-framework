@@ -33,11 +33,6 @@ class Lethak_Frostbite_Player
 		$this->data = $data;
 	}
 
-	public function setVar($key, $value)
-	{
-		
-	}
-
 	public function toArray()
 	{
 		return $this->data;
@@ -60,11 +55,6 @@ class Lethak_Frostbite_Player
 	## -------------------------------------------------------------------------
 
 
-	public function isSpectator()
-	{
-		throw new Exception('NotImplementedYet');
-		
-	}
 
 	# admin.movePlayer <name> <teamId> <squadId> <forceKill>
 	# Move a player to another team and squad
@@ -121,6 +111,10 @@ class Lethak_Frostbite_Player
 		throw new Exception('NotImplementedYet');
 	}
 
+	public function isSpectator()
+	{
+		throw new Exception('NotImplementedYet');
+	}
 
 }
 
