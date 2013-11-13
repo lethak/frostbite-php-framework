@@ -15,8 +15,8 @@ class Lethak_Frostbite_Server_Preset_Deimos extends Lethak_Frostbite_Server_Pres
 			'vars.preset' => "Hardcore",
 
 			//'vars.serverName' => "LethaK's Frostbite PHP Framework Server",
-			'vars.serverMessage' => 'This server is running a custom Deimos preset',
-			//'vars.serverDescription' => '',
+			'vars.serverMessage' => 'http://deim.fr',
+			'vars.serverDescription' => 'Have fun, be nice !',
 			//'vars.gamePassword' => '', // Disallowed on Ranked, ReadOnly
 			//'vars.serverType' => 'Official', // Official, Ranked, Unranked, Private
 			
