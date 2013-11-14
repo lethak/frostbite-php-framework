@@ -14,15 +14,27 @@ class Lethak_Frostbite_Server_Players
 		$this->server = $Server;
 	}
 
+	public function get($playerName)
+	{
+		$list = $this->getList();
+		foreach ($list['players'] as $player)
+		{
+			if($player->name==$playerName)
+				return $player;
+		}
+
+		throw new Lethak_Frostbite_Rcon_InvalidPlayer_Exception($playerName);
+		
+	}
 
 	/**
 	 * Fetch the live player list from the game-server
 	 * 
 	 * If not authed, some info will be missing like the EA guid
 	 * 
-	 * @param bool $asObject Deprecated - always true please, use $player->toArray() instead
+	 * @param bool $asObject (default: true) Return array of playerArray if false
 	 * @throws Exception
-	 * @return Array of Lethak_Frostbite_Player
+	 * @return Array of Lethak_Frostbite_Player or array if $asObject=false
 	 * 	(
 	 * 	    [status] => OK
 	 * 	    [players] => Array
@@ -90,7 +102,7 @@ class Lethak_Frostbite_Server_Players
 		    [18] => 170
 		    [19] => 16
 		    [20] => 49
-
+	
 		    [21] => krogoth21
 		    [22] => EA_3D2109D5E6DBB68E3802C60330FC93XX
 		    [23] => 2
@@ -106,6 +118,7 @@ class Lethak_Frostbite_Server_Players
 		*/
 
 		$table['status'] = ''.$response[0];
+
 		$numberOfPlayerField = intval($response[1]);
 
 		unset($response[0], $response[1]);

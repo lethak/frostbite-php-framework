@@ -261,7 +261,7 @@ class Lethak_Frostbite_Rcon_Connection
 		list($isFromServer, $isResponse, $sequence, $words) = self::DecodePacket($packet);
 
 		if($this->throwExceptions($words[0], $string))
-			$this->rconCommand($string, $iteration++);
+			$words = $this->rconCommand($string, $iteration++);
 
 		return $words;
 	}
@@ -270,6 +270,11 @@ class Lethak_Frostbite_Rcon_Connection
 	{
 		if(substr($responseCode, 0,2)!='OK')
 		{
+			if (is_array($cmd))
+				$cmd2 = implode(' ', $cmd);
+			else
+				$cmd2 = $cmd;
+
 			switch($responseCode)
 			{
 				case 'LogInRequired':
@@ -279,71 +284,71 @@ class Lethak_Frostbite_Rcon_Connection
 						return true;
 					}
 					else
-						throw new Lethak_Frostbite_Rcon_LogInRequired_Exception(implode(' ', $cmd));
+						throw new Lethak_Frostbite_Rcon_LogInRequired_Exception($cmd2);
 				break;
 
 				case 'InvalidArgument':
 				case 'InvalidArguments':
-					throw new Lethak_Frostbite_Rcon_InvalidArguments_Exception(implode(' ', $cmd));
+					throw new Lethak_Frostbite_Rcon_InvalidArguments_Exception($cmd2);
 				break;
 
 				case 'InvalidNumberOfArguments':
-					throw new Lethak_Frostbite_Rcon_InvalidNumberOfArguments_Exception(implode(' ', $cmd));
+					throw new Lethak_Frostbite_Rcon_InvalidNumberOfArguments_Exception($cmd2);
 				break;
 
 				case 'PasswordNotSet':
-					throw new Lethak_Frostbite_Rcon_PasswordNotSet_Exception(implode(' ', $cmd));
+					throw new Lethak_Frostbite_Rcon_PasswordNotSet_Exception($cmd2);
 				break;
 
 				case 'InvalidPassword':
 				case 'InvalidPasswordHash':
-					throw new Lethak_Frostbite_Rcon_InvalidPassword_Exception(implode(' ', $cmd));
+					throw new Lethak_Frostbite_Rcon_InvalidPassword_Exception($cmd2);
 				break;
 
 				case 'PlayerNotFound':
-					throw new Lethak_Frostbite_Rcon_PlayerNotFound_Exception(implode(' ', $cmd));
+					throw new Lethak_Frostbite_Rcon_PlayerNotFound_Exception($cmd2);
 				break;
 
 				case 'MessageIsTooLong':
 				case 'TooLongMessage':
-					throw new Lethak_Frostbite_Rcon_MessageIsTooLong_Exception(implode(' ', $cmd));
+					throw new Lethak_Frostbite_Rcon_MessageIsTooLong_Exception($cmd2);
 				break;
 
 				case 'InvalidPlayer':
 				case 'InvalidPlayerId':
-					throw new Lethak_Frostbite_Rcon_InvalidPlayer_Exception(implode(' ', $cmd));
+					throw new Lethak_Frostbite_Rcon_InvalidPlayer_Exception($cmd2);
 				break;
 
 				case 'SoldierNotDead':
 				case 'PlayerNotDead':
-					throw new Lethak_Frostbite_Rcon_PlayerNotDead_Exception(implode(' ', $cmd));
+					throw new Lethak_Frostbite_Rcon_PlayerNotDead_Exception($cmd2);
 				break;
 
 				case 'SoldierNotAlive':
 				case 'PlayerNotAlive':
-					throw new Lethak_Frostbite_Rcon_SoldierNotAlive_Exception(implode(' ', $cmd));
+					throw new Lethak_Frostbite_Rcon_SoldierNotAlive_Exception($cmd2);
 				break;
 
 				case 'InvalidForceKill':
-					throw new Lethak_Frostbite_Rcon_InvalidForceKill_Exception(implode(' ', $cmd));
+					throw new Lethak_Frostbite_Rcon_InvalidForceKill_Exception($cmd2);
 				break;
 				
 				case 'InvalidSquad':
 				case 'InvalidSquadId':
-					throw new Lethak_Frostbite_Rcon_InvalidSquad_Exception(implode(' ', $cmd));
+					throw new Lethak_Frostbite_Rcon_InvalidSquad_Exception($cmd2);
 				break;
 
 				case 'InvalidTeam':
 				case 'InvalidTeamId':
-					throw new Lethak_Frostbite_Rcon_InvalidTeam_Exception(implode(' ', $cmd));
+					throw new Lethak_Frostbite_Rcon_InvalidTeam_Exception($cmd2);
 				break;
 
 				case 'CommandIsReadOnly':
-					throw new Lethak_Frostbite_Rcon_CommandIsReadOnly_Exception(implode(' ', $cmd));
+					throw new Lethak_Frostbite_Rcon_CommandIsReadOnly_Exception($cmd2);
 				break;
 				
 				case 'UnknownCommand':
-					throw new Lethak_Frostbite_Rcon_UnknownCommand_Exception(implode(' ', $cmd));
+					throw new Lethak_Frostbite_Rcon_UnknownCommand_Exception($cmd2);
 				break;
 				
 				default:
