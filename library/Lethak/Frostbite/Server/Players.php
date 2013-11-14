@@ -4,7 +4,10 @@ require_once(dirname(__FILE__).'/../Server.php');
 
 class Lethak_Frostbite_Server_Players
 {
-	private $server;
+	/**
+	 * @var Lethak_Frostbite_Server
+	 */
+	protected $server;
 
 	function __construct(Lethak_Frostbite_Server &$Server)
 	{
@@ -13,43 +16,32 @@ class Lethak_Frostbite_Server_Players
 
 
 	/**
-		@returns
-		Array
-		(
-		    [status] => OK
-		    [players] => Array
-		        (
-		            [0] => Array
-		                (
-		                    [name] => lethak
-		                    [guid] => EA_5FF93997EB97B108B643F1513E0F4FXX
-		                    [teamId] => 1
-		                    [squadId] => 1
-		                    [kills] => 0
-		                    [deaths] => 0
-		                    [score] => 0
-		                    [rank] => 30
-		                    [ping] => 21
-		                )
-
-		            [1] => Array
-		                (
-		                    [name] => FR-Akasid
-		                    [guid] => EA_47292D6CA18E6051304C52A949EA18XX
-		                    [teamId] => 2
-		                    [squadId] => 1
-		                    [kills] => 0
-		                    [deaths] => 0
-		                    [score] => 0
-		                    [rank] => 24
-		                    [ping] => 51
-		                )
-
-		        )
-
-		    [playerCount] => 2
-		)
-	*/
+	 * Fetch the live player list from the game-server
+	 * 
+	 * If not authed, some info will be missing like the EA guid
+	 * 
+	 * @param bool $asObject Deprecated - always true please, use $player->toArray() instead
+	 * @throws Exception
+	 * @return Array of Lethak_Frostbite_Player
+	 * 	(
+	 * 	    [status] => OK
+	 * 	    [players] => Array
+	 * 	        (
+	 * 	            [0] => Lethak_Frostbite_Player
+	 * 	                (
+	 * 	                    ...
+	 * 	                )
+	 * 
+	 * 	            [1] => Lethak_Frostbite_Player
+	 * 	                (
+	 * 	                   ...
+	 * 	                )
+	 * 
+	 * 	        )
+	 * 
+	 * 	    [playerCount] => 2
+	 * 	)
+	 */
 	public function getList($asObject=true)
 	{
 		$this->server->connectionEnforcement();
@@ -71,7 +63,7 @@ class Lethak_Frostbite_Server_Players
 			}
 		}
 
-		/*
+		/* DEBUG RESPONSE:
 		Array
 		(
 		    [0] => OK
@@ -127,18 +119,19 @@ class Lethak_Frostbite_Server_Players
 
 		$iCursor = 2;
 
-		// Fetching column title
+		// Fetching column title ...
 		for ($i=0; $i < $numberOfPlayerField; $i++)
 		{ 
 			$titles[$i] = $response[$iCursor];
 			$iCursor++;
 		}
 
+		// Fetching player count ...
 		$table['playerCount'] = intval($response[$iCursor]);
 		unset($response[$iCursor]);
 		$iCursor++;
 		
-		// Fetching player set
+		// Fetching player set ...
 		$playerSet = 0;
 		while ($playerSet<$table['playerCount'])
 		{
@@ -162,5 +155,99 @@ class Lethak_Frostbite_Server_Players
 
 
 	}
+
+
+
+	/**
+	 * Sending a chat message to the server or a player subset
+	 *
+	 * Displayed within the ingame chat window, prefixed by '[ADMIN]'
+	 * Using rcon command: admin.say
+	 *
+	 * @param string $message
+	 * @param string $playerSubset can be 'all', 'player <name>', 'team <id>', 'squad <teamid> <squadid>'
+	 * @throws Exception
+	 * @return Lethak_Frostbite_Server_Players
+	 */
+	public function say($message='', $playerSubset='all')
+	{
+		$message = trim((string)$message);
+		$message = str_replace(array('"',"'"), '`', $message);
+		if($message!=='')
+		{
+			$cmd = array_merge(array('admin.say', $message), explode(' ', $playerSubset));
+			$response = $this->server->rconCommand($cmd);
+		}
+		return $this;
+	}
+
+	/**
+	 * Sending a message to the server or a player subset,
+	 *
+	 * Displayed in front of the game-client screen for a specified duration
+	 * Using rcon command: admin.yell
+	 *
+	 * @param string $message
+	 * @param string $duration
+	 * @param string $playerSubset can be 'all', 'player <name>', 'team <id>', 'squad <teamid> <squadid>'
+	 * @throws Exception
+	 * @return Lethak_Frostbite_Server_Players
+	 */
+	public function yell($message='', $duration=5, $playerSubset='all')
+	{
+		$message = trim((string)$message);
+		$message = str_replace(array('"',"'"), '`', $message);
+		if($message!=='')
+		{
+			$cmd = array_merge(array('admin.yell', $message, $duration), explode(' ', $playerSubset));
+			$response = $this->server->rconCommand($cmd);
+		}
+		return $this;
+	}
+
+	/**
+	 * Kick a player from the server
+	 *
+	 * Using rcon command: admin.kickPlayer
+	 *
+	 * @param string $playerName
+	 * @param string $reason Displayed to the user as the reason why they were kicked (Optional)
+	 * @throws Exception
+	 * @return Lethak_Frostbite_Server_Players
+	 */
+	public function kick($playerName='', $reason='')
+	{
+		$playerName = str_replace(' ', '', $playerName);
+		if ($playerName!='')
+		{
+			$cmd = array('admin.kickPlayer', $playerName, $reason);
+			$response = $this->server->rconCommand($cmd);
+		}
+		return $this;
+	}
+
+	/**
+	 * Kill a player without scoring effects
+	 *
+	 * Using rcon command: admin.killPlayer
+	 *
+	 * @param string $playerName
+	 * @throws Exception
+	 * @return Lethak_Frostbite_Server_Players
+	 */
+	public function killPlayer($playerName='')
+	{
+		$playerName = str_replace(' ', '', $playerName);
+		if ($playerName!='')
+		{
+			$cmd = array('admin.killPlayer', $playerName);
+			$response = $this->server->rconCommand($cmd);
+		}
+		return $this;
+	}
+
+
+
+
 
 }

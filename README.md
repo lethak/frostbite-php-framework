@@ -14,9 +14,14 @@ Features
 * Object Oriented from the user perspective
 
 ```php
-$server = new Lethak_Frostbite_Server("192.168.0.1", 47200);
-$server->connect();
-$some_stuff = $server->getVar('maxPlayers');
+$server = new Lethak_Frostbite_Server("192.168.0.1", 47200, 'myRconPassword');
+$server
+	->login()
+	->yell('Hello World !')
+	->rconCommand('vars.friendlyFire 1')
+;
+// ...
+$player->say('Goodbye '.$player->name.' !')->kick();
 ```
 
 
@@ -28,7 +33,6 @@ $some_stuff = $server->getVar('maxPlayers');
 ```
 
 
-
 What is working ?
 -----------------
 - Quick preset switching (Normal, Hardcore, Inf)
@@ -36,32 +40,33 @@ What is working ?
 - You can define a dynamically generated preset (on the fly)
 - Issuing a single or bulk rcon commands (request/response)
 - Server login and auth process (hashed)
-- toying with players (list/kick/say/yell)
+- toying with players (list/kill/kick/say/yell)
 - server say/yell
 
 
 What will be working soon ?
 ---------------------------
-- player.kill
 - player.move (squad and team)
+- Maplist (roundRestart, etc)
 
 
 What is planned ahead ?
 -----------------------
-- Maplist
 - BanList
 - ReservedSlotList
 - SpectatorList
 - All the other stuff available within the Remote Admin Protocol of frostbite 2, no timetable.
 
 
-Exemple: RCON Login
+Example: RCON Login
 -------------------
+
+See more: https://github.com/lethak/frostbite-php-framework/tree/master/examples/server-login.php
 
 Authenticate as the server administrator using the RCON password to be granted access to restricted commands
 
 ```php
-$server = new Lethak_Frostbite_Server("192.168.0.1", 47200);
+$server = new Lethak_Frostbite_Server("127.0.0.1", 47200);
 $server->login("myRconPassword");
 
 // Fetch the player list,
@@ -74,17 +79,18 @@ echo '<pre>'.print_r($playerList,1).'</pre>';
 ```
 
 
-Exemple: Multiple server instance
+Example: Multiple server instance
 ---------------------------------
+
 
 Because one does not simply have a single server to manage.
 
 
 ```php
 // Server list declaration
-$serverList[] = new Lethak_Frostbite_Server("192.168.0.1", 47200, "myRconPassword1");
-$serverList[] = new Lethak_Frostbite_Server("192.168.0.2", 47200, "myRconPassword2");
-$serverList[] = new Lethak_Frostbite_Server("192.168.0.3", 47200);
+$serverList[] = new Lethak_Frostbite_Server("127.0.0.1", 47200, "myRconPassword1");
+$serverList[] = new Lethak_Frostbite_Server("127.0.0.2", 47200, "myRconPassword2");
+$serverList[] = new Lethak_Frostbite_Server("127.0.0.3", 47200);
 
 // Issuing commands quickly to the server list
 foreach($serverList as $server)
@@ -95,13 +101,16 @@ foreach($serverList as $server)
 }
 ```
 
-Exemple: Error handling
+Example: Error handling
 ---------------------------------
+
+See more: https://github.com/lethak/frostbite-php-framework/tree/master/examples/server-login.php
+
 
 ```php
 try
 {
-  $server = new Lethak_Frostbite_Server("192.168.0.1", 47200);
+  $server = new Lethak_Frostbite_Server("127.0.0.1", 47200);
   $some_stuff = $server->rconCommand('this.is-not-a-valid-command');
 }
 catch(Exception $error)
@@ -113,8 +122,10 @@ catch(Exception $error)
 
 
 
-Exemple: Creating your own preset class
+Example: Creating you own preset class
 ----------------------------------------
+
+See more: https://github.com/lethak/frostbite-php-framework/tree/master/examples/server-preset.php
 
 For the moment, you have to create your own class like this one.
 Remember to have the class Lethak_Frostbite_Server_Preset_Abstract included.
@@ -140,20 +151,22 @@ class myFastVehiclePreset extends Lethak_Frostbite_Server_Preset_Abstract
 
 ```
 
-Exemple: Applying a server preset
+Example: Applying a server preset
 ---------------------------------
 
-This exemple feature 3 possible methods of using a preset.
+See more: https://github.com/lethak/frostbite-php-framework/tree/master/examples/server-preset.php
+
+This example feature 3 possible methods of using a preset.
 
 - It is possible to use a preset embeded with this framework.
-- It is possible to use your own preset class (created in the above exemple)
+- It is possible to use your own preset class (created in the above example)
 - It is possible to define a preset on the fly using an array of vars.
 
 
 ```php
 try
 {
-	$server = new Lethak_Frostbite_Server("192.168.0.1", 47200, "myRconPassword");
+	$server = new Lethak_Frostbite_Server("127.0.0.1", 47200, "myRconPassword");
 	
 
 	// Embeded 'Hardcore' Preset

@@ -1,5 +1,15 @@
 <?php
 
+# ################################## #
+#  LethaK's Frostbite-PHP-Framework  #
+# ################################## #
+#
+# An open-source Framework to interact with Battlefield servers
+#
+# @author lethak https://github.com/lethak/frostbite-php-framework
+#
+
+
 require_once(dirname(__FILE__).'/Rcon/Exception.php');
 require_once(dirname(__FILE__).'/Rcon/Connection.php');
 
@@ -8,15 +18,37 @@ require_once(dirname(__FILE__).'/Player.php');
 require_once(dirname(__FILE__).'/Server/Players.php');
 require_once(dirname(__FILE__).'/Server/Maps.php');
 
-
+/**
+ * Use this class as an entry point to connect and interact with your gameserver and its attributes.
+ * 
+ * @author lethak
+ */
 class Lethak_Frostbite_Server extends Lethak_Frostbite_Rcon_Connection
 {
-	public $label;
-	public $players;
-	public $maps;
-	
 
-	function __construct($serverIp, $rconPort, $rconPassword=null, $label=null)
+	/**
+	 * @var string
+	 */
+	public $label;
+
+	/**
+	 * @var Lethak_Frostbite_Server_Players
+	 */
+	protected $players;
+
+	/**
+	 * @var Lethak_Frostbite_Server_Maps
+	 */
+	protected $maps;
+	
+	/**
+	 * 
+	 * @param string $serverIp IP address used to connect to the game-server's remote admin protocol
+	 * @param integer $rconPort Remote Admin Protocol connection port (often 47200)
+	 * @param string $rconPassword (Optional) This must be the rcon password of the server. Used to auto-auth if provided
+	 * @param string $label (Optional) label to be fetched later in your application.
+	 */
+	function __construct($serverIp, $rconPort=47200, $rconPassword=null, $label=null)
 	{
 		parent::__construct($serverIp, $rconPort, $rconPassword);
 
@@ -28,6 +60,28 @@ class Lethak_Frostbite_Server extends Lethak_Frostbite_Rcon_Connection
 		$this->maps = new Lethak_Frostbite_Server_Maps($this);
 	}
 
+	function __get($key)
+	{
+		if(property_exists('Lethak_Frostbite_Server', $key))
+			return $this->$key;
+		return null;
+	}
+
+	function __set($key, $value)
+	{
+		//DNT
+	}
+
+	/**
+	 * Used to authenticate with the Remote Admin Server
+	 * 
+	 * The rcon password must be set serer-side,
+	 * and provided to the method or the server object (preferably)
+	 * @param string $password This must be the rcon password of the server (Optional if provided with the constructor)
+	 * @throws Lethak_Frostbite_Rcon_Connection_Exception
+	 * @throws Exception
+	 * @return Lethak_Frostbite_Server
+	 */
 	public function login($password=null)
 	{
 		if($password===null||$password=='')
@@ -54,6 +108,11 @@ class Lethak_Frostbite_Server extends Lethak_Frostbite_Rcon_Connection
 	}
 
 
+	/**
+	 * getVar
+	 * @deprecated I will remove this method to replace it with a more robust and generic
+	 * @return array
+	 */
 	public function getVar($varName=null)
 	{
 		//ex: $varName='maxPlayers'
@@ -69,6 +128,13 @@ class Lethak_Frostbite_Server extends Lethak_Frostbite_Rcon_Connection
 		return array('vars.'.$varName=>intval($response[1]));
 	}
 
+	/**
+	 * This method is a shortcut aiming to apply 'something' to the server.
+	 * At the moment, only Lethak_Frostbite_Server_Preset_Abstract are implemented
+	 *
+	 * @throws Exception
+	 * @return Lethak_Frostbite_Server
+	 */
 	public function apply($whatToApply)
 	{
 		if($whatToApply instanceof Lethak_Frostbite_Server_Preset_Abstract)
@@ -77,47 +143,8 @@ class Lethak_Frostbite_Server extends Lethak_Frostbite_Rcon_Connection
 		return $this;
 	}
 
-
-	public function say($message='', $playerSubset='all')
-	{
-		$message = trim((string)$message);
-		$message = str_replace(array('"',"'"), '`', $message);
-		if($message!=='')
-		{
-			$cmd = array_merge(array('admin.say', $message), explode(' ', $playerSubset));
-			$response = $this->rconCommand($cmd);
-		}
-		return $this;
-	}
-
-	public function yell($message='', $duration=5, $playerSubset='all')
-	{
-		$message = trim((string)$message);
-		$message = str_replace(array('"',"'"), '`', $message);
-		if($message!=='')
-		{
-			$cmd = array_merge(array('admin.yell', $message, $duration), explode(' ', $playerSubset));
-			$response = $this->rconCommand($cmd);
-		}
-		return $this;
-	}
-
-	# admin.kickPlayer <player name> <reason>
-	# Kick player <soldier name> from server
-	public function kick($playerName='', $reason='')
-	{
-		$playerName = str_replace(' ', '', $playerName);
-		if ($playerName!='')
-		{
-			$cmd = array('admin.kickPlayer', $playerName, $reason);
-			$response = $this->rconCommand($cmd);
-		}
-		return $this;
-	}
+	
 
 
 }
-
-
-class Lethak_Frostbite_Server_Exception extends Exception {}
 

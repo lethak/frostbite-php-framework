@@ -1,4 +1,13 @@
 <?php
+# ################################## #
+#  LethaK's Frostbite-PHP-Framework  #
+# ################################## #
+#
+# An open-source Framework to interact with Battlefield servers
+#
+# @author lethak https://github.com/lethak/frostbite-php-framework
+#
+
 require_once(dirname(__FILE__).'/Abstract.php');
 
 class Lethak_Frostbite_Server_Preset_Custom extends Lethak_Frostbite_Server_Preset_Abstract

@@ -1,5 +1,12 @@
 <?php
-
+# ################################## #
+#  LethaK's Frostbite-PHP-Framework  #
+# ################################## #
+#
+# An open-source Framework to interact with Battlefield servers
+#
+# @author lethak https://github.com/lethak/frostbite-php-framework
+#
 
 class Lethak_Frostbite_Rcon_Exception 							extends Exception {}
 

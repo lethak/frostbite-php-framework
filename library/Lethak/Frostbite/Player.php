@@ -1,22 +1,42 @@
 <?php
+# ################################## #
+#  LethaK's Frostbite-PHP-Framework  #
+# ################################## #
+#
+# An open-source Framework to interact with Battlefield servers
+#
+# @author lethak https://github.com/lethak/frostbite-php-framework
+#
 
+
+
+/**
+ * This class is used to map a player entity
+ * @author lethak
+ */
 class Lethak_Frostbite_Player
 {
 
-	/*
-        [name] => lethak
-        [guid] => EA_5FF93997EB97B108B643F1513E0F4XXX
-        [teamId] => 1
-        [squadId] => 1
-        [kills] => 0
-        [deaths] => 0
-        [score] => 0
-        [rank] => 36
-        [ping] => 27
-	*/
-
-
+	/**
+	 * Array container
+	 *
+     *   [name] => lethak
+     *   [guid] => EA_5FF93997EB97B108B643F1513E0F4XXX
+     *   [teamId] => 1
+     *   [squadId] => 1
+     *   [kills] => 0
+     *   [deaths] => 0
+     *   [score] => 0
+     *   [rank] => 36
+     *   [ping] => 27
+     * 
+     * @var array
+	 */
 	protected $data;
+
+	/**
+	 * @var Lethak_Frostbite_Server
+	 */
 	private $server;
 
 	function __construct($data=null, Lethak_Frostbite_Server &$Server)
@@ -25,14 +45,24 @@ class Lethak_Frostbite_Player
 		$this->setData($data);
 	}
 
+	/**
+	 * This will erase the current Player object and populate it with your $data
+	 * @param array $data
+	 * @return Lethak_Frostbite_Player
+	 */
 	public function setData($data=null)
 	{
 		if(!is_array($data) && $data!==null)
 			$data = array($data);
 
 		$this->data = $data;
+		return $this;
 	}
 
+	/**
+	 * This function returns an array with player infos
+	 * @return array
+	 */
 	public function toArray()
 	{
 		return $this->data;
@@ -63,33 +93,51 @@ class Lethak_Frostbite_Player
 		throw new Exception('NotImplementedYet');
 	}
 
-	# admin.killPlayer <player name>
-	# Kill a player without scoring effects
+	/**
+	 * Kill a player without scoring effects
+	 *
+	 * Using rcon command: admin.killPlayer
+	 *
+	 * @throws Exception
+	 * @return Lethak_Frostbite_Player
+	 */
 	public function kill()
 	{
-		throw new Exception('NotImplementedYet');
+		$this->server->players->killPlayer($this->name);
+		return $this;
 	}
 
-	# admin.kickPlayer <player name> <reason>
-	# Kick player <soldier name> from server
+	/**
+	 * Kick a player from the server
+	 *
+	 * Using rcon command: admin.kickPlayer
+	 *
+	 * @param string $reason (Optional) Displayed to the user as the reason why they were kicked
+	 * @throws Exception
+	 * @return Lethak_Frostbite_Player
+	 */
 	public function kick($reason='')
 	{
-		$this->server->kick($this->name, $reason);
+		$this->server->players->kick($this->name, $reason);
+		return $this;
 	}
 
 	public function ban()
 	{
 		throw new Exception('NotImplementedYet');
+		return $this;
 	}
 
 	public function say($message='')
 	{
-		$this->server->say($message, 'player '.$this->name);
+		$this->server->players->say($message, 'player '.$this->name);
+		return $this;
 	}
 
 	public function yell($message='', $duration=5)
 	{
-		$this->server->yell($message, $duration, 'player '.$this->name);
+		$this->server->players->yell($message, $duration, 'player '.$this->name);
+		return $this;
 	}
 
 	public function idleDuration()

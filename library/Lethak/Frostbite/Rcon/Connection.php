@@ -1,9 +1,19 @@
 <?php
+# ################################## #
+#  LethaK's Frostbite-PHP-Framework  #
+# ################################## #
+#
+# An open-source Framework to interact with Battlefield servers
+#
+# @author lethak https://github.com/lethak/frostbite-php-framework
+#
 
 
 /**
-* This class handle the connection stuff between Frostbite and php
-* @thanks https://github.com/RobFreiburger/Battlefield-3-RCON-PHP-Scripts/blob/master/rcon.funcs.php
+* This class is used internaly to handle the connection stuff between Frostbite and php
+* 
+* @author RobFreiburger https://github.com/RobFreiburger
+* @author lethak https://github.com/lethak/
 */
 class Lethak_Frostbite_Rcon_Connection
 {
