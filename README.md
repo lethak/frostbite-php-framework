@@ -96,7 +96,7 @@ $serverList[] = new Lethak_Frostbite_Server("127.0.0.3", 47200);
 foreach($serverList as $server)
 {
   // do your stuff ...
-  $some_stuff = $server->getVar('maxPlayers');
+  $some_stuff = $server->rconCommand('vars.maxPlayers');
   $server->say('Team killing for vehicles is prohibited');
 }
 ```

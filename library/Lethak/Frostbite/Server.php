@@ -144,7 +144,38 @@ class Lethak_Frostbite_Server extends Lethak_Frostbite_Rcon_Connection
 	}
 
 	
+	/**
+	 * (shortcut) Sending a chat message to all players
+	 *
+	 * Displayed within the ingame chat window, prefixed by '[ADMIN]'
+	 * Using rcon command: admin.say message all
+	 *
+	 * @param string $message
+	 * @throws Exception
+	 * @return Lethak_Frostbite_Server
+	 */
+	public function say($message='')
+	{
+		$this->players->say($message, 'all');
+		return $this;
+	}
 
+	/**
+	 * (shortcut) Sending a yell message to all players
+	 *
+	 * Displayed in front of the game-client screen for a specified duration
+	 * Using rcon command: admin.yell
+	 *
+	 * @param string $message
+	 * @param string $duration
+	 * @throws Exception
+	 * @return Lethak_Frostbite_Server_Players
+	 */
+	public function yell($message='', $duration=5)
+	{
+		$this->players->yell($message, $duration, 'all');
+		return $this;
+	}
 
 }
 
