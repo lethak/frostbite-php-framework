@@ -14,10 +14,14 @@ class Lethak_Frostbite_Server_Players
 		$this->server = $Server;
 	}
 
-	public function get($playerName)
+	public function get($playerName=null)
 	{
-		$list = $this->getList();
-		foreach ($list['players'] as $player)
+		$players = $this->getList();
+		
+		if($playerName===null)
+			return $players;
+
+		foreach ($players['list'] as $player)
 		{
 			if($player->name==$playerName)
 				return $player;
@@ -37,7 +41,7 @@ class Lethak_Frostbite_Server_Players
 	 * @return Array of Lethak_Frostbite_Player or array if $asObject=false
 	 * 	(
 	 * 	    [status] => OK
-	 * 	    [players] => Array
+	 * 	    [list] => Array
 	 * 	        (
 	 * 	            [0] => Lethak_Frostbite_Player
 	 * 	                (
@@ -51,7 +55,12 @@ class Lethak_Frostbite_Server_Players
 	 * 
 	 * 	        )
 	 * 
-	 * 	    [playerCount] => 2
+	 * 	    [count] => 2
+	 * 	    [fields] => Array
+	 * 			(
+	 *				[0] => name
+	 *				...
+	 * 			)
 	 * 	)
 	 */
 	public function getList($asObject=true)
@@ -124,8 +133,8 @@ class Lethak_Frostbite_Server_Players
 		unset($response[0], $response[1]);
 
 
-		$table['players'] = array();
-		$titles = array();
+		$table['list'] = array();
+		$table['fields'] = array();
 		$valueBuffer = array();
 		$iPlayerField = 0;
 		$iPlayerSet = 0;
@@ -135,29 +144,29 @@ class Lethak_Frostbite_Server_Players
 		// Fetching column title ...
 		for ($i=0; $i < $numberOfPlayerField; $i++)
 		{ 
-			$titles[$i] = $response[$iCursor];
+			$table['fields'][$i] = $response[$iCursor];
 			$iCursor++;
 		}
 
 		// Fetching player count ...
-		$table['playerCount'] = intval($response[$iCursor]);
+		$table['count'] = intval($response[$iCursor]);
 		unset($response[$iCursor]);
 		$iCursor++;
 		
 		// Fetching player set ...
 		$playerSet = 0;
-		while ($playerSet<$table['playerCount'])
+		while ($playerSet<$table['count'])
 		{
 			$tempPlayer = array();
 			for ($i=0; $i < $numberOfPlayerField; $i++)
 			{ 
-				$tempPlayer[$titles[$i]] = $response[$iCursor];
+				$tempPlayer[$table['fields'][$i]] = $response[$iCursor];
 				unset($response[$iCursor]);
 				if(count($tempPlayer)>=$numberOfPlayerField)
 				{
 					if($asObject)
 						$tempPlayer = new Lethak_Frostbite_Player($tempPlayer, $this->server);
-					$table['players'][] = $tempPlayer;
+					$table['list'][] = $tempPlayer;
 				}
 				$iCursor++;
 			}

@@ -316,6 +316,7 @@ class Lethak_Frostbite_Rcon_Connection
 
 				case 'InvalidPlayer':
 				case 'InvalidPlayerId':
+				case 'InvalidPlayerName':
 					throw new Lethak_Frostbite_Rcon_InvalidPlayer_Exception($cmd2);
 				break;
 
@@ -351,6 +352,14 @@ class Lethak_Frostbite_Rcon_Connection
 					throw new Lethak_Frostbite_Rcon_UnknownCommand_Exception($cmd2);
 				break;
 				
+				case 'SetTeamFailed':
+				case 'SetSquadFailed':
+				case 'BanListFull':
+				case 'InvalidIdType':
+				case 'InvalidBanType':
+				case 'InvalidTimeStamp':
+				case 'IncompleteBan':
+				case 'AccessError':
 				default:
 					throw new Lethak_Frostbite_Rcon_Exception($responseCode);
 				break;

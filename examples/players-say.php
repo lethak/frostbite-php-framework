@@ -37,7 +37,7 @@ try
 	$blacklist = array('xXxXxAdolfHitlerxXxXx', '000MotherFracker000', 'LOL-YolO-SwAg-LOL'); //example only
 
 	// Looping through the player list ...
-	foreach ($playerList['players'] as $player)
+	foreach ($playerList['list'] as $player)
 	{
 		// by default, $player is an instance of Lethak_Frostbite_Player
 

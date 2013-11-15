@@ -46,6 +46,11 @@ class Lethak_Frostbite_Server extends Lethak_Frostbite_Rcon_Connection
 	public $label;
 
 	/**
+	 * @var array
+	 */
+	protected $info;
+
+	/**
 	 * @var Lethak_Frostbite_Server_Players
 	 */
 	protected $players;
@@ -189,6 +194,56 @@ class Lethak_Frostbite_Server extends Lethak_Frostbite_Rcon_Connection
 	{
 		$this->players->yell($message, $duration, 'all');
 		return $this;
+	}
+
+
+
+	public function info($asObject=true)
+	{
+		throw new Exception("NotImplementedYet");
+		//FIXME !
+		
+		$RESULT = array();
+		
+		/*Array
+		(
+			[0] => OK 						//OK
+			[1] => DEIM | Deimos Corp..  	//<serverName: string>
+			[2] => 65						//<current playercount: integer>
+			[3] => 64						//<effectivemax playercount: integer>
+			[4] => ConquestLarge0			//<current gamemode: string>
+			[5] => MP_Siege					//<current map: string>
+			[6] => 0 						//<roundsPlayed: integer>
+			[7] => 1 						//<roundsTotal: string>
+
+			[8] => 2 						// number of teams
+			
+			[9] => 173.354233				//<scores: team scores>
+			[10] => 489.0758				//<scores: team scores>
+
+			[11] => 0						//<onlineState: online state>
+			[12] => 						//
+			[13] => true					//<ranked: boolean>
+			[14] => true					//<punkBuster: boolean>
+			[15] => false					//<hasGamePassword: boolean>
+			[16] => 42068					//<serverUpTime: seconds>
+			[17] => 1157					//<roundTime: seconds>
+			[18] => 109.239.158.44:25200	//<gameIpAndPort: IpPortPair>
+			[19] => v1.880 | A1390 C2.332	//<punkBusterVersion: string>
+			[20] => true					//<joinQueueEnabled: boolean>
+			[21] => EU						//<region: string>
+			[22] => ams						//<closestPingSite: string> //XXX//<matchMakingEnabled: boolean>
+			[23] => FR						//<country: string>
+			[24] => 65						//<blazePlayerCount: integer>
+			[25] => IN_GAME					//<blazeGameState: string> 
+		)*/
+		$response = $this->rconCommand('serverinfo');
+		die('<pre>'.print_r($response, true).'</pre>');
+		if($response[0]=='OK')
+		{
+
+		}
+		return $RESULT;
 	}
 
 }
