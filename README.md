@@ -46,12 +46,13 @@ What is working ?
 
 What will be working soon ?
 ---------------------------
+- Not actively continuing the project due to lack of interest.
+
+
+What may be added ahead ?
+-----------------------
 - player.move (squad and team)
 - Maplist (roundRestart, etc)
-
-
-What is planned ahead ?
------------------------
 - BanList
 - ReservedSlotList
 - SpectatorList
