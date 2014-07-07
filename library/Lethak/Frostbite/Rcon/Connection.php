@@ -105,10 +105,28 @@ class Lethak_Frostbite_Rcon_Connection
 
 	static function DecodeHeader($data)
 	{
-		$header = unpack('I', mb_substr($data, 0, 4));
-		return array($header & 0x80000000, $header & 0x40000000, $header & 0x3fffffff);
+		/*
+			The OLD Method has problems to decode the header. No boolean values & no sequence was given.
+			The new Version get the Unsigned Integer and Bitwise-AND't it correctly.
+			
+			ORIGINAL:
+			$header = unpack('I', mb_substr($data, 0, 4));
+			return array($header & 0x80000000, $header & 0x40000000, $header & 0x3fffffff);
+		*/
+		$value		= self::DecodeInt32($data);
+		$sequence	= $value & 0x3FFFFFFF;
+		$isFromServer	= ($value & 0x80000000) != 0;
+		$isResponse	= ($value & 0x40000000) != 0;
+			
+		/*var_dump(array(
+			'sequence'			=> $sequence,
+			'isFromServer'		=> $isFromServer,
+			'isResponse'		=> $isResponse
+		));*/
+			
+		return array($isFromServer, $isResponse, $sequence);
 	}
-
+	
 	static function EncodeHeader($isFromServer, $isResponse, $sequence)
 	{
 		$header = $sequence & 0x3fffffff;
