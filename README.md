@@ -1,7 +1,7 @@
 LethaK's Frostbite-PHP-Framework
 =======================
 
-Still under development.
+Not under active development anymore
 
 
 Features
