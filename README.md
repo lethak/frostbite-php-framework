@@ -9,7 +9,7 @@ Features
 
 * A lightweight PHP Framework library wrapping Frostbite's RCON protocol.
 * Lets you trigger admin command from your website or CLI.
-* Tested with Battlefield 4 server R10.
+* Tested with Battlefield 4 server up to R42.
 * Error handling via Exception
 * Object Oriented from the user perspective
 
