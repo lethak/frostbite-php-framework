@@ -3,6 +3,8 @@ LethaK's Frostbite-PHP-Framework
 
 Not under active development anymore
 
+We recomand the work of this guy : https://github.com/RobFreiburger/BF4_Webcon
+
 
 Features
 --------
